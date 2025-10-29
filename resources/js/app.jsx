@@ -8,6 +8,11 @@ import { createRoot } from 'react-dom/client';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Inertia } from '@inertiajs/inertia';
+import axios from 'axios';
+
+
+axios.defaults.withCredentials = true; // <- IMPORTANTE
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 

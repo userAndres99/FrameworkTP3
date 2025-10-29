@@ -2,6 +2,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 're
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useState } from 'react';
+import { getOrganizacionesSOAP } from '@/utils/soapClient';
 
 // Función para obtener el icono según el tipo de animal (o de organización que quiere marcar su ubicacion)
 function getMarkerIcon(tipoAnimal, markerType = 'animal') {
@@ -11,6 +12,8 @@ function getMarkerIcon(tipoAnimal, markerType = 'animal') {
     const iconUrl = 'https://cdn-icons-png.flaticon.com/512/684/684908.png'; // edificio
     return new L.icon({ iconUrl, iconSize: [28, 28], iconAnchor: [14, 28] });
   }
+
+  
 
   // modo animal
   let iconUrl;
@@ -27,6 +30,12 @@ function getMarkerIcon(tipoAnimal, markerType = 'animal') {
   }
   return new L.icon({ iconUrl, iconSize: [32, 32], iconAnchor: [16, 32] });
 }
+
+function getMarkerIconOrg() {
+    const iconUrl='https://cdn-icons-png.flaticon.com/512/684/684908.png';
+    return new L.icon({ iconUrl, iconSize: [28,28], iconAnchor:[14,28]});
+  }
+
 
 function ChangeView({ center }) {
   const map = useMap();
@@ -66,6 +75,20 @@ export default function MapaInteractivo({
   showMarkers = true,
 }) {
   const [markers, setMarkers] = useState([]);
+  const [organizacion, setOrganizacion] = useState([]);
+
+  useEffect(() =>{
+    async function fetchOrganizaciones(){
+      try{
+        const data = await getOrganizacionesSOAP();
+        console.log('Organizaciones recibidas:', data);
+        setOrganizacion(data);
+      }catch (err) {
+        console.log('Error al cargar organizaciones SOAP', err);
+      }
+    }
+    fetchOrganizaciones();
+  },[]);
 
   useEffect(() => {
     if (!showMarkers) return;
@@ -91,6 +114,26 @@ export default function MapaInteractivo({
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
         />
 
+        {organizacion
+        .filter(o => o.latitud && o.longitud)
+        .map((org) => (
+          <Marker
+            key={org.id}
+            position={[Number(org.latitud), Number(org.longitud)]}
+            icon={getMarkerIconOrg()}
+          >
+            <Popup>
+              <div style={{ fontWeight: 600 }}>{org.nombre}</div>
+              <div>{org.descripcion}</div>
+              <div>{org.telefono}</div>
+              <div>{org.email}</div>
+            </Popup>
+
+
+          </Marker>
+        ))
+        }
+
         <ChangeView center={center || initialPosition} />
 
         {!readOnly && onLocationSelect && (
@@ -114,7 +157,7 @@ export default function MapaInteractivo({
               <Marker
                 key={m.id}
                 position={[Number(m.latitud), Number(m.longitud)]}
-                icon={getAnimalIcon(m.tipoAnimal)}
+                icon={getMarkerIcon(m.tipoAnimal)}
               >
                 <Popup>
                   <div style={{ fontWeight: 600 }}>{m.tipoAnimal}</div>

@@ -10,6 +10,7 @@ use App\Http\Controllers\SolicitudVerificacionController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComentarioController;
+use App\Http\Controllers\SoapOrganizacionController;
 use Inertia\Inertia;
 
 /* -----------------------------------------------------------------
@@ -181,4 +182,7 @@ Route::get('/comentarios/json', [ComentarioController::class, 'index'])->name('c
 /* -----------------------------------------------------------------
 | Rutas de autenticación (login, register, etc.)
 ----------------------------------------------------------------- */
+
+
+Route::any('/soap/organizaciones', [SoapOrganizacionController::class, 'server']);
 require __DIR__.'/auth.php';
