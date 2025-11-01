@@ -15,9 +15,7 @@ export default function FiltroCiudad({ onCiudadSelect }) {
     setLoading(true);
     try {
       const res = await fetch(
-        `https://apis.datos.gob.ar/georef/api/localidades?nombre=${encodeURIComponent(
-          inputValue
-        )}&campos=nombre,provincia,centroide&max=10`
+        `https://apis.datos.gob.ar/georef/api/v2.0/localidades?nombre=${encodeURIComponent(inputValue)}&campos=nombre,provincia,centroide&max=10&formato=json`
       );
       const data = await res.json();
 
