@@ -45,4 +45,29 @@ class SoapOrganizacionController extends Controller
 
     return $result;
 }
+
+    /**
+     * REST wrapper respuesta SOAP en JSON
+     * Ruta la ruta es GET /soap/organizaciones/rest
+     */
+    public function restWrapper(Request $request)
+    {
+        // utilizamos la logica del metodo SOAP
+        $soapResult = $this->getOrganizaciones();
+
+        // cambiamos a formato JSON
+        $data = array_map(function ($org) {
+            return [
+                'id' => $org->id,
+                'nombre' => $org->nombre,
+                'telefono' => $org->telefono,
+                'email' => $org->email,
+                'descripcion' => $org->descripcion,
+                'latitud' => $org->latitud,
+                'longitud' => $org->longitud,
+            ];
+        }, $soapResult);
+
+        return response()->json(['data' => $data], 200);
+    }
 }

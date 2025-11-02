@@ -54,6 +54,13 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Mapa
                                 </NavLink>
 
+                                <NavLink
+                                    href={route('mapa.rest')}
+                                    active={route().current('mapa.rest')}
+                                >
+                                    Mapa REST
+                                </NavLink>
+
                                 <NavLink href="/historias">
                                     Historias de Éxito
                                 </NavLink>

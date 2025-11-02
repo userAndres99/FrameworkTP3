@@ -84,6 +84,11 @@ Route::get('/mapa', function () {
     return Inertia::render('MapaPage');
 })->middleware(['auth'])->name('mapa');
 
+// Página de comparación: mapa SOAP vs mapa REST
+Route::get('/mapa-rest', function () {
+    return Inertia::render('Mapas/Comparar');
+})->middleware(['auth'])->name('mapa.rest');
+
 /* -----------------------------------------------------------------
 | Historias de éxito
 ----------------------------------------------------------------- */
@@ -185,4 +190,6 @@ Route::get('/comentarios/json', [ComentarioController::class, 'index'])->name('c
 
 
 Route::any('/soap/organizaciones', [SoapOrganizacionController::class, 'server']);
+// REST wrapper para exponer la info en formato JSON
+Route::get('/soap/organizaciones/rest', [SoapOrganizacionController::class, 'restWrapper']);
 require __DIR__.'/auth.php';
